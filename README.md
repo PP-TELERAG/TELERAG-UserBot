@@ -21,33 +21,47 @@ To get started with TELERAG User Bot, follow these steps:
     ```bash
     cd TELERAG-UserBot
     ```
-3. Install the required dependencies:
+3. Create a virtual environment:
+    ```bash
+    python3 -m venv venv
+    ```
+4. Activate the virtual environment:
+    ```bash
+    source venv/bin/activate
+    ```
+5. Install the required dependencies:
     ```bash
     pip install -r requirements.txt
     ```
-4. Configure the bot with your settings.
+6. Log in to your Telegram account:
+    ```bash
+    python3 src/utils/telegram_sign_in.py
+    ```
+7. Run the bot with the following command:
+    ```bash
+    python3 main.py
+    ```
+
+In the future, the bot will be able to run using `docker-compose`.
 
 ## Requirements
 
 The project dependencies listed in `requirements.txt` include:
 - `annotated-types==0.7.0`
 - `asyncpg==0.30.0`
+- `certifi==2025.1.31`
+- `loguru==0.7.3`
+- `pyaes==1.6.1`
 - `pydantic==2.10.6`
 - `pydantic-settings==2.8.1`
 - `pydantic_core==2.27.2`
+- `Pyrogram==2.0.106`
+- `PySocks==1.7.1`
 - `python-dotenv==1.0.1`
+- `sentry-sdk==2.22.0`
+- `TgCrypto==1.2.5`
 - `typing_extensions==4.12.2`
-
-## Usage
-
-Run the bot with the following command:
-```bash
-python3 main.py
-```
-
-## Contributing
-
-We welcome contributions! Please fork the repository and submit a pull request.
+- `urllib3==2.3.0`
 
 ## License
 
