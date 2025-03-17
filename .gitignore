@@ -1,5 +1,5 @@
 /venv/
-.env/
+.env
 
 __pycache__/
 *.py[cod]
@@ -20,7 +20,4 @@ pip-delete-this-directory.txt
 .DS-store
 Thumbs.db
 
-.dockerignore
-
-
-
+*.session

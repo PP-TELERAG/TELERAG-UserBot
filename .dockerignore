@@ -1,0 +1,14 @@
+Dockerfile
+
+*.log
+
+dist
+build
+
+*.tmp
+*.swp
+
+coverage
+
+.DS_Store
+Thumbs.db
