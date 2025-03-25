@@ -1,11 +1,7 @@
 import re
 import types
 
-from pyrogram import Client
 import asyncio
-
-client = Client()
-
 
 
 async def main():

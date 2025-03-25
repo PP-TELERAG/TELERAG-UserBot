@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings
 
 from functools import lru_cache
 
+
 class Settings(BaseSettings):
     # PYROGRAM SETTINGS
     PYRO_API_ID: int
@@ -19,7 +20,7 @@ class Settings(BaseSettings):
     # LOGGER
     LOGGER: str
     LOGGER_LEVEL: str
-    
+
     @model_validator(mode="before")
     @classmethod
     def get_database_url(cls, v):
@@ -32,8 +33,10 @@ class Settings(BaseSettings):
         env_file = ".env"
         extra = "ignore"
 
+
 @lru_cache
 def get_settings():
     return Settings()
+
 
 settings = get_settings()

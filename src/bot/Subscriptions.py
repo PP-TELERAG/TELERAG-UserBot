@@ -12,7 +12,8 @@ class Subscriptions:
     async def __fetch_subscriptions(self, client: Client):
         async with client as session:
             dialogs = await session.get_dialogs()
-            self.subscriptions_id = {dialog.chat.id for dialog in dialogs if dialog.chat.type in ("channel", "supergroup")}
+            self.subscriptions_id = {
+                dialog.chat.id for dialog in dialogs if dialog.chat.type in ("channel", "supergroup")}
 
     async def __join_channels(self, client: Client, channel_ids: list[int]):
         if not self.subscriptions_id:
@@ -56,9 +57,5 @@ class Subscriptions:
     async def update_privates(self):
         pass
 
-
     async def __send_invite_to_private_channel(self):
         pass
-
-
-

@@ -1,22 +1,14 @@
 import asyncio
-from pyrogram import Client
-from src.config.config import settings
+
+from src.bot.client import app
 
 
 async def main():
-    async with Client(
-        name="./account",
-        workdir=".",
-        api_id=settings.PYRO_API_ID,
-        api_hash=settings.PYRO_API_HASH,
-        app_version="1.0",
-        device_model="TELERAG",
-
-    ) as app:
+    async with app:
         me = await app.get_me()
         print("Вход выполнен\n\n", "Информация о профиле:\n", me)
-        await app.stop()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
