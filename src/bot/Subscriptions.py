@@ -2,56 +2,59 @@ import re
 import types
 from pyrogram import Client
 from pyrogram.errors import PeerIdInvalid
-
+from loguru import logger
 
 class Subscriptions:
 
     def __init__(self):
-        self.subscriptions_id = set()
+        self.subscriptions_ids = set()
+        self.client = Client()
 
-    async def __fetch_subscriptions(self, client: Client):
-        async with client as session:
+    async def __fetch_subscriptions(self):
+        async with self.client as session:
             dialogs = await session.get_dialogs()
-            self.subscriptions_id = {dialog.chat.id for dialog in dialogs if dialog.chat.type in ("channel", "supergroup")}
+            self.subscriptions_ids = {dialog.chat.id for dialog in dialogs if dialog.chat.type in ("channel", "supergroup")}
 
-    async def __join_channels(self, client: Client, channel_ids: list[int]):
-        if not self.subscriptions_id:
-            await self.__fetch_subscriptions(client)
+    async def __join_channels(self, channel_ids: list[int]):
+        if not self.subscriptions_ids:
+            await self.__fetch_subscriptions()
 
-        async with client:
+        async with self.client as client:
             for channel_id in channel_ids:
-                if channel_id not in self.subscriptions_id:
+                if channel_id not in self.subscriptions_ids:
                     try:
                         await client.join_chat(channel_id)
-                        print(f"Joined {channel_id}")
-                        self.subscriptions_id.add(channel_id)
+                        logger.info("Joined channel {}", channel_id)
+                        self.subscriptions_ids.add(channel_id)
                     except Exception as e:
-                        print(f"Failed to join {channel_id}")
+                        logger.exception("Exception occurred while joining channel {}: {}", channel_id, e)
                 else:
-                    print(f"Already joined {channel_id}")
+                    logger.info("Already joined channel {}", channel_id)
 
-    async def __leave_channels(self, client: Client, channel_ids: list[int]):
+    async def __leave_channels(self, channel_ids: list[int]):
         pass
 
-    async def __validate_channel_id(self, client: Client, channel_id: int):
-        async with client:
+    async def __validate_channel_id(self, channel_id: int):
+        async with self.client as client:
             try:
                 channel = await client.get_chat(channel_id)
                 if channel.type == "supergroup" or channel.type == "channel":
+                    logger.info("Channel {} was validated successfully (type {})", channel_id, channel.type)
                     return True
-                return False
-            except PeerIdInvalid as e:
-                print(f"Failed to validate {channel_id}")
+                else:
+                    logger.warning("Channel {} has unsupported type: {}", channel_id, channel.type)
+                    return False
+            except Exception as e:
+                logger.exception("Error occurred while validating a channel {}: {}", channel_id, e)
 
-    async def update(self, client: Client, ids: list[int]):
+    async def update(self, ids: list[int]):
         temp_ids = []
         for id in ids:
-            if self.__validate_channel_id(client, id):
+            if await self.__validate_channel_id(id):
                 temp_ids.append(id)
 
-        print(f"IDs to subscribe{temp_ids}. Joining to {len(temp_ids)} IDs")
-
-        await self.__join_channels(client, temp_ids)
+        logger.info("IDs to subscribe {}. Joining to {}", temp_ids, len(ids))
+        await self.__join_channels(temp_ids)
 
     async def update_privates(self):
         pass
