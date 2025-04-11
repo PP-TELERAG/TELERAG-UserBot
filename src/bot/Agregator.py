@@ -1,3 +1,0 @@
-
-class Agregator:
-    pass
